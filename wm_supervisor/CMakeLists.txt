@@ -9,7 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib_msgs
   move_base_msgs
   roscpp
-  wm_arm_msgs
+  sara_arm_msgs
   message_generation
   std_srvs
   std_msgs

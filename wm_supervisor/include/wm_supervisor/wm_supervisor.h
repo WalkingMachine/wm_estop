@@ -14,7 +14,7 @@
 #include "wm_supervisor/robotStatus.h"
 #include "actionlib/client/simple_action_client.h"
 #include "actionlib/client/terminal_state.h"
-#include "wm_arm_msgs/executePlanAction.h"
+#include "sara_arm_msgs/executePlanAction.h"
 #include "move_base_msgs/MoveBaseAction.h"
 #include "roboteq_msgs/Command.h"
 #include "std_msgs/String.h"
