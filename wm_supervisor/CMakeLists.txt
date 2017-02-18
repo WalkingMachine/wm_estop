@@ -71,7 +71,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
  generate_messages(
    DEPENDENCIES
-#   actionlib_msgs#   move_base_msgs#   wm_arm_msgs
+#   actionlib_msgs#   move_base_msgs#   sara_arm_msgs
  )
 
 ################################################
@@ -106,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES wm_supervisor
-  CATKIN_DEPENDS actionlib actionlib_msgs move_base_msgs roscpp wm_arm_msgs message_generation std_srvs std_msgs
+  CATKIN_DEPENDS actionlib actionlib_msgs move_base_msgs roscpp sara_arm_msgs message_generation std_srvs std_msgs
 #  DEPENDS system_lib
 )
 
