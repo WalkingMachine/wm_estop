@@ -48,7 +48,7 @@ namespace wm{
 			ros::ServiceServer stopSignalSrv_;
 			ros::Subscriber audioStreamSub_, startSignalSub_, safeVelocitySub_;
 			ros::Publisher safeVelocityPub_, FLWdrivePub_, FRWdrivePub_, RLWdrivePub_, RRWdrivePub_;
-			actionlib::SimpleActionClient<wm_arm_msgs::executePlanAction> moveArmAC_;
+			actionlib::SimpleActionClient<sara_arm_msgs::executePlanAction> moveArmAC_;
 			actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> moveBaseAC_;
 			int status_;
 
