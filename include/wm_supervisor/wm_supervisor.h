@@ -11,48 +11,50 @@
 #include <string>
 
 #include "ros/ros.h"
-#include "wm_supervisor/robotStatus.h"
 #include "actionlib/client/simple_action_client.h"
 #include "actionlib/client/terminal_state.h"
-#include "sara_arm_msgs/executePlanAction.h"
-#include "move_base_msgs/MoveBaseAction.h"
-#include "roboteq_msgs/Command.h"
-#include "std_msgs/String.h"
 #include "std_msgs/Bool.h"
-#include "std_srvs/Empty.h"
 #include "std_srvs/SetBool.h"
-#include "geometry_msgs/Twist.h"
+#include <ctime>
 #include <boost/thread/lock_guard.hpp>
+
+#define WATCHDOG 1000    //ms
 
 namespace wm{
 
 	const std::string STOP_STR = "stop";
-	const int STATUS_OK = 1;
-	const int STOP_COMMANDED = -1;
-	const int STAND_BY = 2;
+
+	typedef enum {
+		RUN,
+		STOP,
+		TIMED_OUT
+	} T_Status;
 
 	class wmSupervisor
 	{
-		public:
-			wmSupervisor(const ros::NodeHandle&, const std::string&, const std::string&);
-			~wmSupervisor();
-			bool robotStatusService(wm_supervisor::robotStatus::Request&, wm_supervisor::robotStatus::Response&);
-			bool stopSignalService(std_srvs::SetBool::Request&, std_srvs::SetBool::Response&);
+	public:
+		wmSupervisor(ros::NodeHandle nh_);
 
-		private:
-			void audioSubscriberCallback(const std_msgs::String&);
-			void startSignalCallback(const std_msgs::Bool&);
-			void safeVelocityCallback(const geometry_msgs::Twist&);
-			ros::NodeHandle nh_;
-			ros::ServiceServer robotStatusSrv_;
-			ros::ServiceServer stopSignalSrv_;
-			ros::Subscriber audioStreamSub_, startSignalSub_, safeVelocitySub_;
-			ros::Publisher safeVelocityPub_, FLWdrivePub_, FRWdrivePub_, RLWdrivePub_, RRWdrivePub_;
-			actionlib::SimpleActionClient<sara_arm_msgs::executePlanAction> moveArmAC_;
-			actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> moveBaseAC_;
-			int status_;
+		~wmSupervisor();
 
-			boost::mutex mtx_;
+		bool stopSignalService(std_srvs::SetBool::Request &, std_srvs::SetBool::Response &);
+
+		unsigned long getLastArduinoMessageTime();
+
+		bool watchdogHandler();
+
+	private:
+		unsigned long lastArduinoMessageTime;
+
+		void startSignalCallback(const std_msgs::Bool &);
+
+		ros::NodeHandle nh_;
+		ros::ServiceServer stopSignalSrv_;
+		ros::ServiceClient eStopService_;
+		ros::Subscriber startSignalSub_;
+		T_Status status_;
+
+		boost::mutex mtx_;
 	};
 } //namespace wm
 #endif /* WM_SUPERVISOR_H_ */
