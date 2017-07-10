@@ -24,7 +24,7 @@
 
 #define DEBOUNCE_DELAY 500      //delay of bounce for debouncers
 
-#define TIMEOUT_FEEDBACK 1000   //timeout for service caller feedback
+#define TIMEOUT_FEEDBACK 500   //timeout for service caller feedback
 
 #define PUBLISH_INTERVAL 200
 
@@ -155,9 +155,9 @@ void loop() {
       break;
 
 		case SHUTDOWN:                              //System is going to shutdown.
-//			if(bStartPressed && !bStopPressed){
-//				system_state = RUN;
-//			}
+		  if(bStartPressed && !bStopPressed){
+				system_state = RUN;
+			}
 			break;
 	}
 
@@ -167,9 +167,7 @@ void loop() {
 	led_handler();
 
 	//Power Relay Control
-  if(system_state == SHUTDOWN){
-    digitalWrite(POWER_CTRL, HIGH);
-  }
+  digitalWrite(POWER_CTRL, system_state == SHUTDOWN);
 	
   //ros initialise service caller
   if(system_state == START_BACK){
