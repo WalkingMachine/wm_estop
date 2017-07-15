@@ -4,7 +4,6 @@
  * Topic: start_button
  */
  
-#include "ArCom_Main.h"
 #include "ButtonsManager.h"
 
 #define LED_PIN         4       //PIN for LED feedback
@@ -18,17 +17,13 @@
 #define BUZZ_TIME 200           //BUZZER TIME
 #define BUZZ_TONE 1047          //BUZZER TONE
 
-#define TIMEOUT_FEEDBACK 5000   //timeout for service caller feedback
+#define TIMEOUT_FEEDBACK 1500   //timeout for service caller feedback
 
 #define PUBLISH_INTERVAL 200
 
 typedef enum{
 	RUN,
 	STOP,
-	LAPTOP_FEEDBACK_PENDING,
-	START_PENDING,
-  START_BACK,
-  WAIT_START_RAISED,
 	SHUTDOWN
 }T_State;
 
@@ -64,7 +59,7 @@ void setup(){
 }
 
 void loop() {
-  static unsigned long lastSerialReception = 0 ;
+  static unsigned long lastSerialReception = 0;
   static unsigned long publisherTime = 0 ;
 
 
@@ -85,6 +80,8 @@ void loop() {
   //manage timeout
   if((millis() - lastSerialReception) > TIMEOUT_FEEDBACK){
     connection_lost = true;
+  }else if(lastSerialReception == 0){
+    connection_lost = true;
   }else{
     connection_lost = false;
   }
@@ -98,11 +95,7 @@ void loop() {
 			}
 			break;
 
-		case STOP:                                  //System go in stop mode, call a ROS service for inform main system.
-			system_state = START_PENDING;
-			break;
-
-		case START_PENDING:                         //System is waiting for press on START button for go back in normal running mode.
+		case STOP:                         //System is waiting for press on START button for go back in normal running mode.
 			if(bStartPressed && !bStopPressed){
 				system_state = RUN;
 			}
@@ -128,11 +121,6 @@ void loop() {
 
 	//Power Relay Control
   digitalWrite(POWER_CTRL, system_state == SHUTDOWN);
-	
-  //ros initialise service caller
-  if(system_state == START_BACK){
-    
-  }
  
   //ros publisher
   if((millis() - publisherTime) > PUBLISH_INTERVAL){
@@ -162,12 +150,14 @@ void led_handler(){
       timeHigh = SHORT_INTERVAL;
 			break;
 
-		case START_PENDING:
+		case STOP:
 		  timeHigh = timeLow = SHORT_INTERVAL;
       break;
 
-    default:
-      timeHigh = timeLow = SHORT_INTERVAL;
+    case SHUTDOWN:
+      timeHigh = LONG_INTERVAL;
+      timeLow = SHORT_INTERVAL;
+      break;
 	}
 
   if(connection_lost){
