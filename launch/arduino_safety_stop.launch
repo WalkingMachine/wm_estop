@@ -1,5 +1,0 @@
-<launch>
-
-	<node name="safety_stop" pkg="rosserial_python" type="serial_node.py" args="/dev/ttyACM0" output="screen"/>
-
-</launch>
