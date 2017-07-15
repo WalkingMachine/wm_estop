@@ -1,0 +1,5 @@
+<launch>
+    <node name="safety_supervisor" pkg="wm_supervisor" type="wm_supervisor_node" output="screen">
+        <param name="port_name" value="/dev/estop" />
+    </node>
+</launch>
