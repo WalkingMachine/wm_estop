@@ -71,7 +71,6 @@ namespace wm {
 
 
 	bool SerialManager::watchDogHandler() {
-		static bool bLastState = false;
 		time_t timer;
 		time(&timer);
 		//read actual system time
@@ -85,7 +84,6 @@ namespace wm {
 	}
 
 	void SerialManager::sendStatus(bool status){
-		static bool bLastState = false;
 		time_t timer;
 		time(&timer);
 		//read actual system time

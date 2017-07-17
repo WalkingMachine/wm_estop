@@ -38,9 +38,9 @@ namespace wm {
 	void wmSupervisor::actions() {
 		static T_Status lastStatus = status_;
 
-		if(lastStatus != status_){
+		if(lastStatus != status_) {
 			lastStatus = status_;
-			switch(status_){
+			switch (status_) {
 				case RUN:
 					ROS_WARN("Received start signal.");
 					break;
@@ -49,12 +49,15 @@ namespace wm {
 					break;
 			}
 		}
-
 		if(status_ == RUN && !bRunning){
-			//todo: call service
+			std_srvs::SetBool srv;
+			srv.request.data = (unsigned char)true;
+			eStopService_.call(srv);
 			bRunning = true;
 		}else if(status_ == STOP && bRunning){
-			//todo: call service
+			std_srvs::SetBool srv;
+			srv.request.data = (unsigned char)false;
+			eStopService_.call(srv);
 			bRunning = false;
 		}
 	}
