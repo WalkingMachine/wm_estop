@@ -15,20 +15,21 @@ namespace wm {
 
 		serialManager = manager;
 		eStopService_ = nh_.serviceClient<std_srvs::SetBool::Request, std_srvs::SetBool::Response>("estop_service");
+		estop_state_publisher = nh_.advertise<std_msgs::Bool>("supervisor/estop_state", 1);
 	}
 
 	wmSupervisor::~wmSupervisor() {
 	}
 
 	void wmSupervisor::stateMachine() {
-		switch(status_){
+		switch (status_) {
 			case RUN:
-				if(!bReceivedState || bIsTimedOut){
+				if (!bReceivedState || bIsTimedOut) {
 					status_ = STOP;
 				}
 				break;
 			case STOP:
-				if(bReceivedState && !bIsTimedOut){
+				if (bReceivedState && !bIsTimedOut) {
 					status_ = RUN;
 				}
 				break;
@@ -38,7 +39,7 @@ namespace wm {
 	void wmSupervisor::actions() {
 		static T_Status lastStatus = status_;
 
-		if(lastStatus != status_) {
+		if (lastStatus != status_) {
 			lastStatus = status_;
 			switch (status_) {
 				case RUN:
@@ -49,20 +50,20 @@ namespace wm {
 					break;
 			}
 		}
-		if(status_ == RUN && !bRunning){
+		if (status_ == RUN && !bRunning) {
 			std_srvs::SetBool srv;
-			srv.request.data = (unsigned char)true;
+			srv.request.data = (unsigned char) true;
 			eStopService_.call(srv);
 			bRunning = true;
-		}else if(status_ == STOP && bRunning){
+		} else if (status_ == STOP && bRunning) {
 			std_srvs::SetBool srv;
-			srv.request.data = (unsigned char)false;
+			srv.request.data = (unsigned char) false;
 			eStopService_.call(srv);
 			bRunning = false;
 		}
 	}
 
-	void wmSupervisor::loop(){
+	void wmSupervisor::loop() {
 		//read serial
 		bReceivedState = serialManager->serialHandler();
 		//read timeout
@@ -73,11 +74,14 @@ namespace wm {
 		actions();
 		//send feedback
 		serialManager->sendStatus(bRunning);
+		//publish message
+		message.data = status_ == RUN;
+		estop_state_publisher.publish(message);
 	}
 
 } //end namespace wm
 
-int main(int argc, char **argv){
+int main(int argc, char **argv) {
 	//initialise ros
 	ros::init(argc, argv, "wm_supervisor_node");
 	ros::NodeHandle nh;
@@ -93,14 +97,17 @@ int main(int argc, char **argv){
 	wm::wmSupervisor supervisor(nh, &serialManager);
 
 	ROS_INFO("Waiting for material E-Stop to communicate ...");
-	while(serialManager.SerialAvailable());
+	while (serialManager.SerialAvailable());
 
 	ROS_INFO("E-Stop Found !");
+
+	ros::Rate rate(24.);
 
 	//enter in ros loop
 	while (ros::ok()) {
 		ros::spinOnce();
 		supervisor.loop();
+		rate.sleep();
 	}
 
 	return 0;

@@ -10,6 +10,9 @@
 
 #include "ros/ros.h"
 #include "std_srvs/SetBool.h"
+
+#include <std_msgs/Bool.h>
+
 #include <ctime>
 #include <string>
 #include "SerialManager.h"
@@ -34,6 +37,8 @@ namespace wm{
 	private:
 		ros::NodeHandle nh_;
 		ros::ServiceClient eStopService_;
+		ros::Publisher estop_state_publisher;
+		std_msgs::Bool message;
 
 		SerialManager *serialManager;
 
