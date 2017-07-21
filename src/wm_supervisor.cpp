@@ -86,7 +86,7 @@ int main(int argc, char **argv){
 	std::string tty = ros::param::param<std::string>("/" + ros::this_node::getName() + "/port_name", PORTNAME);
 
 	//start serial
-	ROS_INFO("Triing to open serial communication with %s serial port.", tty);
+	ROS_INFO("Trying to open serial communication with %s serial port.", tty.c_str());
 	wm::SerialManager serialManager(tty);
 
 	//start supervisor
