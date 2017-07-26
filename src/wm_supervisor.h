@@ -16,6 +16,12 @@
 #include <ctime>
 #include <string>
 #include "SerialManager.h"
+#include "roboteq_msgs/Command.h"
+#include "std_msgs/String.h"
+#include "std_msgs/Bool.h"
+#include "std_srvs/Empty.h"
+#include "std_srvs/SetBool.h"
+#include "geometry_msgs/Twist.h"
 
 #define PORTNAME "/dev/ttyUSB0"
 
@@ -46,6 +52,8 @@ namespace wm{
 		bool bReceivedState;
 		bool bIsTimedOut;
 		bool bRunning;
+		ros::Subscriber safeVelocitySub_;
+		ros::Publisher safeVelocityPub_, FLWdrivePub_, FRWdrivePub_, RLWdrivePub_, RRWdrivePub_;
 
 		//state machine
 		T_Status status_;
@@ -54,6 +62,8 @@ namespace wm{
 		void stateMachine();
 		//manage estop reactions
 		void actions();
+
+		void safeVelocityCallback(const geometry_msgs::Twist& msg);
 
 
 	};

@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(wm_supervisor)
 
-find_package(catkin REQUIRED COMPONENTS roscpp std_srvs)
+find_package(catkin REQUIRED COMPONENTS roscpp std_msgs roboteq_msgs geometry_msgs std_srvs)
 
-catkin_package(LIBRARIES wm_supervisor CATKIN_DEPENDS roscpp std_srvs)
+catkin_package(LIBRARIES wm_supervisor CATKIN_DEPENDS roscpp std_msgs roboteq_msgs geometry_msgs std_srvs)
 
 include_directories(${catkin_INCLUDE_DIRS})
 
