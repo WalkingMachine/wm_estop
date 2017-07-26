@@ -30,7 +30,7 @@ namespace wm {
 
 	void wmSupervisor::safeVelocityCallback(const geometry_msgs::Twist& msg)
 	{
-		if (status_ == STOP)
+		if (status_ != STOP)
 		{
 			safeVelocityPub_.publish(msg);
 		}
@@ -38,7 +38,7 @@ namespace wm {
 		else
 		{
 			roboteq_msgs::Command cmd;
-			cmd.mode = cmd.MODE_STOPPED;
+			cmd.mode = cmd.MODE_VELOCITY;
 			cmd.setpoint = 0.0;
 
 			FLWdrivePub_.publish(cmd);
