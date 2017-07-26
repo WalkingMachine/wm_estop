@@ -15,10 +15,40 @@ namespace wm {
 
 		serialManager = manager;
 		eStopService_ = nh_.serviceClient<std_srvs::SetBool::Request, std_srvs::SetBool::Response>("estop_service");
+
+		safeVelocitySub_ = nh_.subscribe("cmd_vel", 10, &wmSupervisor::safeVelocityCallback, this);
+		safeVelocityPub_ = nh_.advertise<geometry_msgs::Twist>("safe_cmd_vel", 1);
+
+		FLWdrivePub_ = nh_.advertise<roboteq_msgs::Command>("/drive0/cmd0", 1);
+		FRWdrivePub_ = nh_.advertise<roboteq_msgs::Command>("/drive1/cmd1", 1);
+		RLWdrivePub_ = nh_.advertise<roboteq_msgs::Command>("/drive2/cmd2", 1);
+		RRWdrivePub_ = nh_.advertise<roboteq_msgs::Command>("/drive3/cmd3", 1);
 	}
 
 	wmSupervisor::~wmSupervisor() {
 	}
+
+	void wmSupervisor::safeVelocityCallback(const geometry_msgs::Twist& msg)
+	{
+		if (status_ == STOP)
+		{
+			safeVelocityPub_.publish(msg);
+		}
+
+		else
+		{
+			roboteq_msgs::Command cmd;
+			cmd.mode = cmd.MODE_STOPPED;
+			cmd.setpoint = 0.0;
+
+			FLWdrivePub_.publish(cmd);
+			FRWdrivePub_.publish(cmd);
+			RLWdrivePub_.publish(cmd);
+			RRWdrivePub_.publish(cmd);
+		}
+		return;
+	}
+
 
 	void wmSupervisor::stateMachine() {
 		switch(status_){
@@ -86,7 +116,7 @@ int main(int argc, char **argv){
 	std::string tty = ros::param::param<std::string>("/" + ros::this_node::getName() + "/port_name", PORTNAME);
 
 	//start serial
-	ROS_INFO("Triing to open serial communication with %s serial port.", tty);
+	ROS_INFO("Trying to open serial communication with %s serial port.", tty);
 	wm::SerialManager serialManager(tty);
 
 	//start supervisor
