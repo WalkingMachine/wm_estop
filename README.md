@@ -1,4 +1,4 @@
-# wm_supervisor
+# wm_e-stop
 
 The supervisor node is here for manage the e-stop security button of [**S.A.R.A.**](http://walkingmachine.ca/).
 
