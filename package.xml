@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package>
-  <name>wm_supervisor</name>
+  <name>wm_estop</name>
     <version>2.0.0</version>
-  <description>The wm_supervisor package</description>
+  <description>The wm_estop package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag --> 
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but mutiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/wm_supervisor</url> -->
+  <!-- <url type="website">http://wiki.ros.org/wm_estop</url> -->
 
 
   <!-- Author tags are optional, mutiple are allowed, one per tag -->
@@ -43,10 +43,6 @@
     <build_depend>roscpp</build_depend>
     <build_depend>std_srvs</build_depend>
     <build_depend>std_msgs</build_depend>
-    <build_depend>roboteq_msgs</build_depend>
-    <build_depend>geometry_msgs</build_depend>
-    <run_depend>geometry_msgs</run_depend>
-    <run_depend>roboteq_msgs</run_depend>
     <run_depend>std_msgs</run_depend>
     <run_depend>roscpp</run_depend>
     <run_depend>std_srvs</run_depend>

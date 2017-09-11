@@ -1,4 +1,4 @@
-# wm_e-stop
+# wm_estop
 
 The supervisor node is here for manage the e-stop security button of [**S.A.R.A.**](http://walkingmachine.ca/).
 
@@ -24,7 +24,7 @@ TODO
 
 ### Publisher :
 
-The ros node `wm_supervisor` publish every time the state of the **estop** on t`supervisor/estop_state` topic.
+The ros node `wm_estop` publish every time the state of the **estop** on t`supervisor/estop_state` topic.
 
 *It use [`std_msgs::Bool`](http://docs.ros.org/api/std_msgs/html/msg/Bool.html) messages.*
 

@@ -120,7 +120,7 @@ void loop() {
 	led_handler();
 
 	//Power Relay Control
-  digitalWrite(POWER_CTRL, system_state == SHUTDOWN);
+  digitalWrite(POWER_CTRL, !(system_state == SHUTDOWN));
  
   //ros publisher
   if((millis() - publisherTime) > PUBLISH_INTERVAL){
