@@ -3,7 +3,7 @@
  * Service: _safety_stop_srv
  * Topic: start_button
  */
- 
+
 #include "ButtonsManager.h"
 
 #define LED_PIN         4       //PIN for LED feedback
@@ -35,6 +35,8 @@ bool connection_lost;
 
 bool start_button_handle();
 bool stop_button_handle();
+bool batLow_handle();
+bool batCritical_handle();
 void led_handler();
 
 void setup(){
@@ -66,9 +68,17 @@ void loop() {
 	//------ input handler ------
 
   //read buttons
- 	bool bStopPressed = !stop_button_handle();
+ 	bool bStopPressed  = !stop_button_handle();
 	bool bStartPressed = start_button_handle();
+  bool batIsLow      = batLow_handle();
+  bool batIsToLow    = batCritical_handle();
 
+  //
+  if(batIsToLow)
+  {
+    tone(BUZZER_PIN, 200, 500);
+  }
+  
   //check reading feedback
   if(bDataToRead){
     bDataToRead = false;
@@ -90,7 +100,7 @@ void loop() {
 
 	switch(system_state){
 		case RUN:                                   //System is running normally, waiting for press on STOP button.
-			if(bStopPressed){
+			if(bStopPressed || batIsToLow){
 				system_state = STOP;
 			}
 			break;

@@ -1,5 +1,7 @@
 #include "ButtonsManager.h"
 
+float voltageBat_GV = 21.0F; //valeur initial pour ignorer les fauce lecture au demerage
+
 void initButtons(){
   pinMode(START_BUTTON, INPUT);
   pinMode(SAFETY_BUTTON, INPUT);
@@ -50,4 +52,34 @@ bool stop_button_handle(){
     stop_last_reading = reading;
   }
   return stop_last_reading;
+}
+
+bool batLow_handle()
+{
+  float voltageBat = (analogRead(ANALOG_BAT_PIN) / 1023.0F) * 5.0F * ANALOG_GAIN; //0-1023 -> 0-21V
+  voltageBat_GV = voltageBat_GV * 0.95F + voltageBat * 0.05F;//moyene, poid de la nouvelle lecture 10%
+
+  if(voltageBat_GV < BAT_LOW_V)
+  {
+    return true;  
+  }
+  else
+  {
+    return false;  
+  }
+}
+
+bool batCritical_handle()
+{
+  float voltageBat = (analogRead(ANALOG_BAT_PIN) / 1023.0F) * 5.0F * ANALOG_GAIN; //0-1023 -> 0-21V
+  voltageBat_GV = voltageBat_GV * 0.95F + voltageBat * 0.05F;//moyene, poid de la nouvelle lecture 10%
+  
+  if(voltageBat_GV < BAT_CRITICAL_V)
+  {
+    return true;  
+  }
+  else
+  {
+    return false;  
+  }
 }
